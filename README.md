@@ -21,3 +21,7 @@ pip install icalendar
 В скрипте можно настроить длину академического часа, а также длинной и короткой перемен.
 
 Кроме того, в скрипте можно указать словарь для замены длинных названий на удобные пользователю аббревиатуры.
+
+## Известные проблемы
+
+При импорте не в дефолтный календарь сервиса Google Calendar, напоминания о событии не добавляются. При импорте в дефолтный календарь все работает как надо, т.е. создаются напоминания за 15 минут до начала занятия. Это проблема Google Calendar, а не скрипта, см. посты [тут](https://support.google.com/calendar/thread/211069526/cannot-import-ics-with-alarms-notifications-to-non-default-calendar?hl=en), [тут](https://support.google.com/calendar/thread/197942453/reminders-alarms-not-imported-when-importing-ics-file-to-calendar-other-than-default-one?hl=en) и [тут](https://webapps.stackexchange.com/questions/112517/importing-reminders-to-google-calendar-using-csv-file).

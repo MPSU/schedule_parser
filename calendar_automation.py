@@ -11,7 +11,7 @@
 from functools import total_ordering
 import requests
 import json
-from icalendar import Calendar, Event
+from icalendar import Calendar, Event, Alarm
 from datetime import datetime, timedelta
 from uuid import uuid4
 import re
@@ -42,7 +42,7 @@ import re
 educator_mode = True
 group = ""                                          # указывается если educator_mode = False
 educator = "Солодовников Андрей Павлович"           # указывается если educator_mode = True
-groups = ["ИВТ-31В", "ПИН-32", "ПИН-33", "ПИН-34"]  # указывается если educator_mode = True
+groups = ["ПИН-34"]  # указывается если educator_mode = True
 academic_hour_duration = 40
 short_recreation_duration = 10
 long_recreation_duration = 40
@@ -279,6 +279,15 @@ def create_ics_file(schedule, start_date, academic_hour_duration, short_recreati
 
     # Устанавливаем правило повторения
     event.add('rrule', {'freq': 'weekly', 'interval': 4, 'count': repeat_number})
+
+    # Создаем напоминание (уведомление)
+    alarm = Alarm()
+    alarm.add('action', 'DISPLAY')
+    alarm.add('description', f'Reminder: {entry.class_name} in {entry.room_number}')
+    alarm.add('trigger', timedelta(minutes=-15))  # За 15 минут до начала
+
+    # Добавляем напоминание в событие
+    event.add_component(alarm)
 
     # Добавляем событие в календарь
     cal.add_component(event)
