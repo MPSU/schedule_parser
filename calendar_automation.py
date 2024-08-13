@@ -40,17 +40,21 @@ import re
 ###############################################################################
 # Режим работы (True — преподавательский, False — студенческий)
 educator_mode = True
-group = ""                                          # указывается если educator_mode = False
-educator = "Солодовников Андрей Павлович"           # указывается если educator_mode = True
-groups = ["ПИН-34"]  # указывается если educator_mode = True
-academic_hour_duration = 40
-short_recreation_duration = 10
-long_recreation_duration = 40
-semester_starts_at = "05-02-2024"
+group         = ""                              # указывается если educator_mode = False
+educator      = "Солодовников Андрей Павлович"  # указывается если educator_mode = True
+groups        = ["ИВТ-31В", "ПИН-32", "ПИН-34"] # указывается если educator_mode = True
+
+academic_hour_duration    = 40    # Длительность академического часа
+short_recreation_duration = 10    # Длительность короткой перемены
+long_recreation_duration  = 40    # Длительность большой перемены
+
+semester_starts_at = "05-02-2024" # Дата начала семестра (первого учебного дня)
+
 class_names_cast = {
   "Микропроцессорные средства и системы" : "МПСиС",
   "Микропроцессорные системы и средства" : "МПСиС"
 }
+
 calendar_file_name = "schedule.ics"
 repeat_number      = 5
 ###############################################################################
