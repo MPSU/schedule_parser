@@ -153,7 +153,7 @@ def get_class_name(name):
 # Проходится по всем занятиям всех указанных групп, и если это занятие ведет
 # указанный преподаватель, добавляет это занятие в итоговый список
 ###############################################################################
-def create_list_of_classes_by_educator(groups, educator, url, cookie):
+def create_list_of_classes_for_educator(groups, educator, url, cookie):
   class_list = []
   for group in groups:
     args = {"group":group}
@@ -176,7 +176,7 @@ def create_list_of_classes_by_educator(groups, educator, url, cookie):
 ###############################################################################
 # Функция, формирующая список всех занятий указанной группы
 ###############################################################################
-def create_list_of_classes_by_group(group, url, cookie):
+def create_list_of_classes_for_student(group, url, cookie):
   class_list = []
   args = {"group":group}
   raw_schedule = requests.get(url=url, params = args, headers = cookie).json()["Data"]
@@ -300,9 +300,9 @@ def create_ics_file(schedule, start_date, academic_hour_duration, short_recreati
 
 
 if educator_mode:
-  unmerged_class_list = create_list_of_classes_by_educator(groups, educator, url, cookie)
+  unmerged_class_list = create_list_of_classes_for_educator(groups, educator, url, cookie)
 else:
-  unmerged_class_list = create_list_of_classes_by_student(group, url, cookie)
+  unmerged_class_list = create_list_of_classes_for_student(group, url, cookie)
 merged_class_list = merge_list_of_classes(unmerged_class_list)
 create_ics_file(merged_class_list, semester_starts_at, academic_hour_duration, short_recreation_duration, long_recreation_duration, calendar_file_name, repeat_number)
 
