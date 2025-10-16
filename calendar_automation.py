@@ -38,6 +38,8 @@ DEFAULT_CONFIG = {
     },
     "repeat_number": 5, # число 4-недельных повторений
                         # (4 для 16-ти недель, 5 для добавления 17-18-ых недель)
+    "add_weeklies": True, # Добавлять ли еженедельные события с типом и
+                          # номером учебной недели
     "calendar_file_name": "schedule.ics",
     "url": "https://miet.ru/schedule/data",
     "cookie": None
@@ -261,12 +263,11 @@ def calculate_semester_start(config):
 ###############################################################################
 # Функция, создающая ics-файл по сформированному списку занятий
 ###############################################################################
-def create_ics_file(schedule, config):
+def create_icalendar(schedule, config):
   start_date                = config["semester_starts_at"]
   academic_hour_duration    = config["academic_hour_duration"]
   short_recreation_duration = config["short_recreation_duration"]
   long_recreation_duration  = config["long_recreation_duration"]
-  file_name                 = config["calendar_file_name"]
   repeat_number             = config["repeat_number"]
   # Преобразуем строку в дату
   start_date = datetime.strptime(start_date, '%d-%m-%Y')
@@ -334,11 +335,27 @@ def create_ics_file(schedule, config):
 
     # Добавляем событие в календарь
     cal.add_component(event)
-
-  # Записываем календарь в файл
-  with open(file_name, 'wb') as f:
-    f.write(cal.to_ical())
+  return cal
 ###############################################################################
+
+week_type = ["Числитель-I", "Знаменатель-I", "Числитель-II", "Знаменатель-II"]
+
+def add_weeklies(cal: Calendar, config: dict):
+  week_start = datetime.strptime(config["semester_starts_at"], "%d-%m-%Y")
+  for week in range(1, 19):
+    days_until_sunday = 6 - week_start.weekday()
+    # +1, т.к. в 'dtend' передается дата, выходящая за диапазон события
+    week_end = week_start + timedelta(days=days_until_sunday + 1)
+
+    event = Event()
+    # -1 т.к. индексы нумеруются с нуля, а недели с 1
+    event.add('summary', week_type[week % 4 - 1] + f"({week})")
+    event.add('dtstart', week_start)
+    event.add('dtend', week_end)
+    event.add('uid', str(uuid4()))
+    cal.add_component(event)
+    week_start = week_end
+  return cal
 
 
 def main():
@@ -365,8 +382,13 @@ def main():
     unmerged = create_list_of_classes_for_student(config)
 
   merged = merge_list_of_classes(unmerged)
-  create_ics_file(merged, config)
+  cal = create_icalendar(merged, config)
+  if(config["add_weeklies"]):
+    cal = add_weeklies(cal, config)
 
+  # Записываем календарь в файл
+  with open(config["calendar_file_name"], 'wb') as f:
+    f.write(cal.to_ical())
 
 if __name__ == "__main__":
     main()
