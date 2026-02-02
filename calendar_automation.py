@@ -67,10 +67,7 @@ def parse_args():
 def merge_dicts(default: dict, override: dict) -> dict:
     result = default.copy()
     for k, v in override.items():
-        if isinstance(v, dict) and isinstance(result.get(k), dict):
-            result[k] = merge_dicts(result[k], v)
-        else:
-            result[k] = v
+      result[k] = v
     return result
 ###############################################################################
 
