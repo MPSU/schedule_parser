@@ -36,6 +36,10 @@ DEFAULT_CONFIG = {
         "Функциональная верификация": "FV",
         "[ДВ] Универсальная методология верификации (UVM)": "UVM"
     },
+    "elective_courses": [
+      "Функциональная верификация",
+      "Bare metal программирование"
+    ],
     "repeat_number": 5, # число 4-недельных повторений
                         # (4 для 16-ти недель, 5 для добавления 17-18-ых недель)
     "add_weeklies": True, # Добавлять ли еженедельные события с типом и
@@ -184,11 +188,21 @@ def create_list_of_classes_for_student(config):
   url      = config["url"]
   cookie   = config["cookie"]
   class_names_cast = config["class_names_cast"]
+  elective_courses = config["elective_courses"]
   args = {"group":group}
   raw_schedule = requests.get(url=url, params = args, headers = cookie).json()["Data"]
   for double_class in raw_schedule:
+    class_name = double_class["Class"]["Name"]
+    if class_name.startswith("[ДВ]"):
+      is_chosen_course = False
+      for elective_course in elective_courses:
+        if elective_course in class_name:
+          is_chosen_course = True
+          break
+      if not is_chosen_course:
+        continue
     class_list.append(ScheduleEntry(
-                        get_class_name(double_class["Class"]["Name"], class_names_cast),
+                        get_class_name(class_name, class_names_cast),
                         double_class["DayNumber"],
                         double_class["Room"]["Name"],
                         double_class["Day"] - 1,         # приводим поля
