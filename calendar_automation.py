@@ -40,8 +40,6 @@ DEFAULT_CONFIG = {
       "Функциональная верификация",
       "Bare metal программирование"
     ],
-    "repeat_number": 5, # число 4-недельных повторений
-                        # (4 для 16-ти недель, 5 для добавления 17-18-ых недель)
     "add_weeklies": True, # Добавлять ли еженедельные события с типом и
                           # номером учебной недели
     "calendar_file_name": "schedule.ics",
@@ -279,7 +277,6 @@ def create_icalendar(schedule, config):
   academic_hour_duration    = config["academic_hour_duration"]
   short_recreation_duration = config["short_recreation_duration"]
   long_recreation_duration  = config["long_recreation_duration"]
-  repeat_number             = config["repeat_number"]
   # Преобразуем строку в дату
   start_date = datetime.strptime(start_date, '%d-%m-%Y')
 
@@ -333,7 +330,7 @@ def create_icalendar(schedule, config):
     event.add('uid', str(uuid4()))
 
     # Устанавливаем правило повторения
-    event.add('rrule', {'freq': 'weekly', 'interval': 4, 'count': repeat_number})
+    event.add('rrule', {'freq': 'weekly', 'interval': 4, 'count': 5 if entry.week_code < 2 else 4})
 
     # Создаем напоминание (уведомление)
     alarm = Alarm()
