@@ -301,7 +301,7 @@ def create_icalendar(schedule, config):
       # Если целевой день недели 1-ой учебной недели идет до первого учебного
       # дня, переносим занятие на следующую итерацию "1-го числителя"
       week_offset = (entry.week_code + 4) * 7
-      day_offset = entry.week_day - first_day_of_semester - 1
+      day_offset = entry.week_day - first_day_of_semester
       first_class_date = start_date + timedelta(days=week_offset + day_offset)
     else:
       # Если целевой день недели идет во время или после дня недели первого
