@@ -330,7 +330,20 @@ def create_icalendar(schedule, config):
     event.add('uid', str(uuid4()))
 
     # Устанавливаем правило повторения
-    event.add('rrule', {'freq': 'weekly', 'interval': 4, 'count': 5 if entry.week_code < 2 else 4})
+    # Обычно занятия повторяются по 4 раза (в 16-недельном семестре)
+    repeat_num = 4
+    # Но занятия первого числителя и знаменателя повторяются 5 раз (чтобы
+    # занятия попали и на 17-18 недели)
+    if entry.week_code < 2:
+      repeat_num = 5
+    # Однако, если сейчас первая учебная неделя и занятие первого числителя
+    # оказалось "позади начала семестра", этого занятия нет на первой неделе
+    # поэтому чтобы оно оказалось на 17ой неделе, его нужно повторять только 4
+    # раза
+    if (entry.week_day < first_day_of_semester) and (entry.week_code == 0):
+      repeat_num = 4
+
+    event.add('rrule', {'freq': 'weekly', 'interval': 4, 'count': repeat_num})
 
     # Создаем напоминание (уведомление)
     alarm = Alarm()
