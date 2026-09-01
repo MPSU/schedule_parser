@@ -37,8 +37,6 @@ DEFAULT_CONFIG = {
         "[ДВ] Универсальная методология верификации (UVM)": "UVM"
     },
     "elective_courses": [
-      "Функциональная верификация",
-      "Bare metal программирование"
     ],
     "add_weeklies": True, # Добавлять ли еженедельные события с типом и
                           # номером учебной недели
@@ -192,11 +190,14 @@ def create_list_of_classes_for_student(config):
   for double_class in raw_schedule:
     class_name = double_class["Class"]["Name"]
     if class_name.startswith("[ДВ]"):
-      is_chosen_course = False
-      for elective_course in elective_courses:
-        if elective_course in class_name:
-          is_chosen_course = True
-          break
+      if elective_courses:
+        is_chosen_course = False
+        for elective_course in elective_courses:
+          if elective_course in class_name:
+            is_chosen_course = True
+            break
+      else:
+        is_chosen_course = True
       if not is_chosen_course:
         continue
     class_list.append(ScheduleEntry(
