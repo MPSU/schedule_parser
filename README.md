@@ -12,7 +12,10 @@
 
 Результат импорта ics-файла, сгенерированным скриптом в google-календарь:
 
-<img width="1691" height="1081" alt="image" src="https://github.com/user-attachments/assets/52e36b79-a6f1-41f5-ad2c-69696666d193" />
+- для студента
+  <img width="1673" height="944" alt="image" src="https://github.com/user-attachments/assets/bf21095d-32d6-4269-9653-efe2d407f980" />
+- для преподавателя
+  <img width="1660" height="1017" alt="image" src="https://github.com/user-attachments/assets/dce7f988-56bf-4383-bea6-af0dc189e72f" />
 
 ## Зависимости
 
