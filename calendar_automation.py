@@ -16,7 +16,7 @@ import sys
 from functools import total_ordering
 from icalendar import Calendar, Event, Alarm
 from datetime import datetime, timedelta
-from uuid import uuid4
+from uuid import uuid5, NAMESPACE_URL
 
 ###############################################################################
 # Конфиг по умолчанию
@@ -113,7 +113,21 @@ class ScheduleEntry:
     return f"\n{self.class_name}\n\tweek_code  : {self.week_code}\n\tweek_day   : {self.week_day}\n\troom_number: {self.room_number}\n\tduration   : {self.duration}"
 ###############################################################################
 
+###############################################################################
+# Функция, получающая стабильный uid из полей, определяющих конкретную запись
+# занятия в календаре.
+# Стабильный UID позволяет избегать дублирующихся записей при повторном импорте
+# ics-файла в случае исправления ошибок генерации.
+###############################################################################
+def make_uid(event):
+    data = "\x1f".join([
+        str(event.get('summary', '')),
+        event.decoded('dtstart').isoformat(),
+        event.decoded('dtend').isoformat(),
+        str(event.get('location', '')),
+    ])
 
+    return str(uuid5(NAMESPACE_URL, data))
 
 ###############################################################################
 # Функция, формирующая название занятия для записи в календаре.
@@ -328,7 +342,7 @@ def create_icalendar(schedule, config):
     event.add('dtstart', start_time)
     event.add('dtend', end_time)
     event.add('location', entry.room_number)
-    event.add('uid', str(uuid4()))
+    event.add('uid', make_uid(event))
 
     # Устанавливаем правило повторения
     # Обычно занятия повторяются по 4 раза (в 16-недельном семестре)
@@ -374,7 +388,7 @@ def add_weeklies(cal: Calendar, config: dict):
     event.add('summary', week_type[week % 4 - 1] + f"({week})")
     event.add('dtstart', week_start)
     event.add('dtend', week_end)
-    event.add('uid', str(uuid4()))
+    event.add('uid', make_uid(event))
     cal.add_component(event)
     week_start = week_end
   return cal
